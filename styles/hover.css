@@ -1,0 +1,24 @@
+/* Read-only, pointer-transparent hover label; never occupies token interactions. */
+#stl-wod20-health-estimate-hover {
+  position: fixed;
+  z-index: 95;
+  pointer-events: none;
+  box-sizing: border-box;
+  max-width: min(440px, calc(100vw - 16px));
+  padding: 6px 10px;
+  border: 1px solid #93bda0;
+  border-radius: 6px;
+  background: rgba(21, 23, 27, 0.94);
+  color: #ffffff;
+  font: 600 14px/1.4 "Signika", sans-serif;
+  text-align: center;
+  text-shadow: 0 1px 1px #000;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.6);
+}
+#stl-wod20-health-estimate-hover[hidden] { display: none !important; }
+#stl-wod20-health-estimate-hover[data-severity="healthy"] { border-color: #93bda0; }
+#stl-wod20-health-estimate-hover[data-severity="minor"] { border-color: #dec582; }
+#stl-wod20-health-estimate-hover[data-severity="wounded"] { border-color: #e3a173; }
+#stl-wod20-health-estimate-hover[data-severity="critical"] { border-color: #db7777; }

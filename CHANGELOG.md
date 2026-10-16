@@ -1,26 +1,24 @@
-# Release history
+# Change history — St. Louis WoD20 Health Hover
+
+## v0.2.0 — 2026-10-16
+
+- **Changed:** Completely removes the `healthEstimate` required relationship. The only package requirement is the `worldofdarkness` game system; keeps Foundry v14 compatibility.
+- **Added:** Standalone, pointer-transparent HTML hover label using native v14 `hoverToken`, `updateActor`, `updateToken`, `refreshToken`, `deleteToken`, and canvas teardown events; follows pan/zoom and moving tokens.
+- **Added:** Token visibility and hidden-to-player checks; hides on scene teardown or deletion, and skips unsupported physical-health data.
+- **Preserved:** Module ID `stl-wod20-health-estimate`, stable manifest URL, five per-client display-mode values, native WoD20 injury calculations, extended health boxes, and no Actor/Token data mutation.
+- **Changed:** Health Estimate's old settings (including hide-estimate behavior, color/position and dead-flag interpretation) no longer control this tooltip. A simple severity border replaces Health Estimate's label color. Unsupported splat tracks display no tooltip rather than delegating to Health Estimate.
+- **Upgrade note:** Disable Health Estimate in the world to avoid duplicate token-hover labels; do not uninstall it if other worlds use it. No data migration.
+- **Rollback note:** Restore prior module directory and re-enable Health Estimate to return to v0.1.1.
+- **Automated:** Node test suite, syntax/manifest assertions, archive integrity checks.
+- **Live Foundry:** Not tested in this environment.
 
 ## v0.1.1 — 2026-10-16
 
-- **Added:** Stable Foundry manifest URL and versioned ZIP download URL on GitHub for installation and update checks.
-- **Changed:** Module publication packaging: downloadable ZIP now has `module.json` at ZIP root, suitable for Foundry's Install Module dialog.
-- **Preserved:** All five display modes, WoD20 health calculations, module ID, Foundry v14 compatibility, native Actor and Token data and existing visibility behavior. No code changes, migrations or world data writes.
-- **Upgrade:** Back up the installed `Data/modules/stl-wod20-health-estimate` directory before updating. Install using the manifest URL or manually replace this adapter folder, then restart Foundry and re-enable as needed.
-- **Rollback:** Disable the adapter, or restore the previous complete module directory; no world data was migrated.
-- **Tests:** Original 16 automated tests rerun plus manifest, archive layout and syntax checks. No live Foundry v14 testing yet.
-- **Known limitations:** Same as v0.1.0; first live installation and hover test remain pending.
+- Added stable GitHub-hosted Foundry manifest and versioned installer archive in `dist/`.
+- Preserved Health Estimate integration, five display modes and module ID.
 
 ## v0.1.0 — 2026-10-16
 
-- **Added:** WoD20-native damage, wound-level and health-fraction adapter for Health Estimate token hover.
-- **Added:** Per-client display options: Descriptive, Abstract, Health bar (text), Damage track (text), Detailed.
-- **Added:** Narrative Bashing/Lethal/Aggravated injury clues by default, with exact values available only in Detailed or Damage track mode.
-- **Added:** Extended physical health-track support and client refresh on health updates.
-- **Fixed relative to unconfigured generic Health Estimate:** No automatic Dead state merely because a WoD20 NPC's wound track is full.
-- **Preserved:** Native WoD20 health data, Health Estimate colors, token visibility rules and explicit defeated/dead flags. No migration or document updates.
-- **Compatibility target:** Foundry 14; `worldofdarkness` v7.3.x; Health Estimate v35.x.
-- **Known limitations:** Wraith Corpus, Changeling chimerical, Mummy extended overflows are not adapted; bars and tracks are textual, not native Token resource bars or drawn rings. Runtime extension may need updates if Health Estimate internals change.
-- **Automated tests:** Health-model and mock integration tests (see TEST-REPORT.md).
-- **Live Foundry/browser tests:** Not yet run in the user's installation.
-- **Upgrade:** Stop Foundry, back up existing adapter folder (if any), replace only this module folder, restart and enable both modules.
-- **Rollback:** Disable adapter and reload, or restore the previous adapter folder. No Actor/Scene schema migration.
+- First WoD20 companion adapter for Health Estimate v35.x and `worldofdarkness` v7.3.x.
+- Native damage types, wound-level descriptors, abstract condition, compact bar, type track, exact count mode.
+- Health-level box sum and precautions about incapacitation versus death.

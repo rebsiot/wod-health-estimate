@@ -22,8 +22,8 @@ function nonNegativeInteger(value) {
 
 /**
  * Get the standard physical damage track. Wraith Corpus and Changeling
- * chimerical damage are distinct tracks; this release intentionally leaves
- * them for Health Estimate's default provider rather than misreport them.
+ * chimerical damage are distinct tracks. This module does not render an
+ * estimate for those unsupported tracks rather than misreport them.
  *
  * @param {Actor} actor
  * @returns {object|null}

@@ -1,84 +1,90 @@
-# St. Louis WoD20 Health Estimate Adapter
+# St. Louis WoD20 Health Hover
 
-**v0.1.1 — 2026-10-16**  
-**For:** Foundry VTT v14, World of Darkness 20th Edition (`worldofdarkness`) v7.3.x, and Health Estimate v35.x (the published v14 release series).
+**v0.2.0 — 2026-10-16**  
+**For:** Foundry VTT v14 and `worldofdarkness` (WoD20) v7.3.x.  
+**Repository:** https://github.com/rebsiot/wod-health-estimate
 
-This is a **new companion module**, not a modified copy of Health Estimate or WoD20. It translates native WoD20 health boxes into Health Estimate's token-hover label and color fraction. In a Mage or Vampire world, it can show overall condition, descriptive injury clues, a compact health bar, a type-by-type damage track, or counts. It reads Actors; it never updates Actors, Tokens, Scenes, or settings for Health Estimate itself.
+A **standalone**, read-only health status tooltip for Mage M20 and Vampire V20 Actors in the WoD20 system. **Health Estimate is not required.** Hover a visible token to see its current standard physical wound condition and, if selected, Bashing/Lethal/Aggravated details. The tooltip follows token positions and canvas pan/zoom.
 
-## Example views
+This version **replaces the old Health Estimate adapter**, but keeps its `stl-wod20-health-estimate` module ID, per-client `displayMode` setting and five display formats. Foundry's normal token visibility/vision determines whether the module displays a label.
 
-For a character with 2 Bashing, 1 Lethal, 1 Aggravated damage on a 7-box track:
+## Hover display modes
 
-| Setting | Example hover text |
+Example: 2 Bashing + 1 Lethal + 1 Aggravated on a 7-box track.
+
+| Per-user mode | Example |
 |---|---|
-| **Descriptive** (default) | `Wounded · battered, bleeding, and grievously hurt` |
-| **Abstract** | `Seriously injured` |
-| **Health bar** | `Wounded · [▰▰▰▱▱▱▱]` |
-| **Damage track** | `Wounded · [ALBB···]` |
-| **Detailed** | `Wounded · 2B · 1L · 1A` |
+| Descriptive (default) | `Wounded · battered, bleeding, and grievously hurt` |
+| Abstract | `Seriously injured` |
+| Health bar | `Wounded · [▰▰▰▱▱▱▱]` |
+| Damage track | `Wounded · [ALBB···]` |
+| Detailed | `Wounded · 2B · 1L · 1A` |
 
-*Bar:* filled symbols are remaining boxes; hollow symbols are damaged boxes. *Damage track:* `A`=Aggravated, `L`=Lethal, `B`=Bashing and `·`=empty. The track is ordered A, L, B, empty, matching WoD's severity-first representation. Bar and track are **compact characters in the Health Estimate hover text**; they do not change Foundry's native token resource bars and do not draw a separate ring. Tracks over 16 boxes are visually abbreviated with `…` (the injury calculations still use all boxes).
+The symbols are **compact text**, not native Foundry resource bars. In a health bar, solid boxes mean *remaining* capacity; open boxes mean *damage*. In a damage track `A`=Aggravated, `L`=Lethal, `B`=Bashing, and `·`=empty. Tracks longer than 16 boxes use `…` to limit tooltip width; actual damage calculations do not truncate.
 
-The default narrative text describes plausible visible injuries without revealing exact damage counts; it cannot know the fictional appearance or source of an injury, so treat these as broad visual clues rather than definitive physical details.
+The descriptive mode gives general visual clues and **does not reveal exact counts**. Those descriptions cannot determine the specific fictional appearance or origin of an injury. A colored border provides a broad condition cue, not a new rule or Actor status.
 
-## Install via Foundry Manifest URL (recommended)
+## Install or update via manifest (recommended)
 
-1. In the **Foundry Setup** screen, open **Add-on Modules → Install Module**.
-2. Paste the following **Manifest URL** into the field at the bottom and select Install:
+Use the same stable **Manifest URL** for all future versions:
 
-   `https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/module.json`
+`https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/module.json`
 
-3. If necessary, install **Health Estimate** from Foundry's package browser (World of Darkness 20th system is required for the world).
-4. Launch the desired `worldofdarkness` world and enable **Health Estimate** and **St. Louis WoD20 Health Estimate Adapter** in **Manage Modules**.
-5. In **Configure Settings → Module Settings**, choose **WoD20 Injury Hover: Display Style**. This selection is per client/user.
+1. In Foundry's **Setup → Add-on Modules → Install Module**, paste the manifest URL and install/update the package.
+2. Launch a world using the **World of Darkness 20th Edition (`worldofdarkness`)** system.
+3. In **Manage Modules**, enable **St. Louis WoD20 Health Hover**. It uses the same module ID as the older adapter; previously selected display preferences should persist.
+4. **Disable Health Estimate** in that world if it is installed and enabled. It is no longer a dependency; leaving it enabled may show duplicate/conflicting hover labels. Do not delete Health Estimate's files if other worlds still need it.
+5. In **Configure Settings → Module Settings**, select **WoD20 Injury Hover: Display Style**. Each player/GM controls their own view.
+6. Reload Foundry clients after updating modules.
 
-Foundry fetches a versioned installer ZIP from the manifest's `download` field. The ZIP is stored in this repository at `dist/stl-wod20-health-estimate-0.1.1.zip` and contains **`module.json` at the ZIP root**, as expected for a manifest install. The manifest URL remains stable across subsequent releases; future ZIP names are versioned and must never be overwritten.
+The manifest currently downloads `dist/stl-wod20-health-estimate-0.2.0.zip`. That ZIP has `module.json` at its root, as required for a Foundry manifest install. The module's ID and manifest URL have **not** changed.
 
-## Manual install or upgrade (alternative)
+## Manual installation via Samba
 
-1. Verify Foundry is v14 and the active game system is `worldofdarkness` (v7.3.x expected). Install **Health Estimate** v35.x from Foundry's package browser and enable it in the world.
-2. If replacing an earlier adapter version, back up `Z:\Data\modules\stl-wod20-health-estimate`. Do not overwrite any other module's directory.
-3. Stop Foundry before replacing module files. Create `Z:\Data\modules\stl-wod20-health-estimate\` if necessary, and extract the **contents of the ZIP** directly into that folder (Ubuntu Foundry user-data directory exposed over Samba). Do not add a duplicate nested folder.
-4. Check that `Z:\Data\modules\stl-wod20-health-estimate\module.json` exists directly inside the module's folder.
-5. Restart Foundry. In the relevant world, enable **Health Estimate** and **St. Louis WoD20 Health Estimate Adapter** under Manage Modules.
-6. Reload clients. Under **Configure Settings > Module Settings**, select **WoD20 Injury Hover: Display Style**. This is a *per-user* selection, so each GM/player may choose their own level of detail. Health Estimate's existing visibility, display timing, fonts, gradients and position settings still apply.
+1. Back up `Z:\Data\modules\stl-wod20-health-estimate` first if it exists. Back up your world as usual before module updates, even though this release does not write world data.
+2. Stop the Foundry application on Ubuntu before replacing the module directory through Samba.
+3. Extract the ZIP **contents** into `Z:\Data\modules\stl-wod20-health-estimate\`. Do not create an extra nested folder. `module.json` must be at the directory root.
+4. Restart Foundry, enable this module in the intended WoD20 world, and disable Health Estimate there to prevent competing displays.
+5. Reload your browser and choose your display style if desired.
 
-Do **not** change `worldofdarkness` files or Health Estimate's source. This adapter requires both packages active and does nothing in other game systems.
+Do **not** modify the `worldofdarkness` system or Health Estimate's source code. Nothing needs conversion or migration.
 
-### One real smoke test
+## Smoke test in live Foundry
 
-Place a Mage or Vampire Actor token on a Scene. Hover over it while healthy and confirm `Uninjured` appears (unless your Health Estimate display settings suppress healthy labels). Mark 2 Bashing + 1 Lethal + 1 Aggravated on the **native actor sheet**, hover again, and check the configured result above. Then switch to **Abstract** and **Health bar** mode and confirm the hover text changes. Clear wounds and confirm recovery. Finally, explicitly mark a defeated token and confirm Health Estimate still displays its dead/defeated state.
+1. Disable Health Estimate. Hover a healthy Mage or Vampire token that is visible to your user. Expect `Uninjured`.
+2. Apply **2 Bashing, 1 Lethal, 1 Aggravated** damage on its **native WoD20 Actor sheet**, then hover. Expect `Wounded · battered, bleeding, and grievously hurt` in default mode.
+3. Change **Display Style** to Abstract, Health bar, Damage track, then Detailed; the tooltip should update immediately if the token remains hovered, or on the next hover.
+4. Test both a linked Actor token and an unlinked NPC token. Test a player account: an **unseen or GM-hidden token should never show an injury tooltip**.
+5. Pan/zoom the scene while hovering, then switch scenes; the label should move with the token and disappear on scene teardown.
+6. Fully fill the damage track. The condition must show **Incapacitated**, *not automatically Dead* (e.g. a Vampire might be torpid).
 
-If the label is invisible, verify Health Estimate is set to show descriptions and that the token isn't hidden or individually opted out in Health Estimate. Test with the `display` mode set to its default hover mode, not `disabled` or `nameplate`.
+If no label appears: confirm world system ID is `worldofdarkness`, module enabled, token is actually visible, and Actor uses the standard `system.health.damage` fields and standard health-level totals. Open the browser console to check for errors. Wraith Corpus and Changeling chimerical tracks intentionally produce no label.
 
-## What it does / doesn't do
+## Behavior and boundaries
 
-- Computes **actual standard physical wound-track capacity** by summing each level's `total` boxes (`bruised` through `incapacitated`). The persisted `system.traits.health.totalhealthlevels.max` can be stale after extra boxes are added, so it is intentionally *not* authoritative here.
-- Reads **Bashing, Lethal and Aggravated** from `actor.system.health.damage` and calculates the current WoD wound level directly from the track. Color/severity is still controlled by Health Estimate.
-- Avoids Health Estimate's generic "NPC at zero HP = dead" conclusion: **Incapacitated does not automatically mean Dead**. Explicit defeated/combat markers and the Health Estimate dead flag remain effective.
-- Preserves Health Estimate's existing hide/visibility controls and colors. No gameplay automation or extra health tracking is introduced.
-- Delegates **Wraith Corpus** and **Changeling chimerical** tracks to Health Estimate's default behavior rather than pretending they are standard physical tracks. Those alternate tracks and Mummy-specific overflow states are **not implemented** in this release.
-- Does **not** render a separate circular ring, fill native token bars, modify token bar attributes, or migrate documents. If you want Foundry's built-in bar, configure the token's own resource-bar display separately; it is not necessary to use this adapter.
-- Is a *runtime integration* with Health Estimate's provider, `getEstimation`, and `isDead` methods. Those are implementation-specific extension points rather than a formal published plugin API and may change in a later Health Estimate version.
+- Calculates maximum physical health from the **sum of each wound level's `total` boxes**, rather than a potentially stale stored traits total. Extra boxes are supported.
+- Reads `actor.system.health.damage.{bashing,lethal,aggravated}`. The module **does not** create/update Actors, Tokens, combat status, Scenes, flags or other module settings.
+- Uses Foundry v14 **`hoverToken` and document hooks**, the official canvas-to-client coordinate API and a lightweight pointer-transparent DOM label. No Health Estimate provider or patched Foundry functions.
+- Honors `Token.isVisible` plus GM-hidden token restrictions. It does not grant a player additional Actor document permissions, though available detail ultimately depends on data sent to the client by WoD20/Foundry. As with v0.1.x, a client choosing Detailed can see damage counts for visible tokens whose Actor health data the client has received.
+- Always displays on token **hover**; it does **not** inherit Health Estimate's display timing, hide-estimate flags, fonts, colors, or status effects. It doesn't change native Foundry resource bars or token nameplates.
+- Standard physical health only. **Wraith Corpus, Changeling chimerical health, Mummy-specific overflow states** and nonstandard Actor shapes are not supported; for these, no tooltip is rendered. This is a change from v0.1.x, which delegated unsupported Actors back to Health Estimate.
+- Doesn't translate a full health track into a definitive death state. Combatant defeated status is not automatically mapped to 'Dead'.
 
-## Troubleshooting and rollback
+## Rollback
 
-If Health Estimate still shows percentages or generic HP labels, confirm the world runs `worldofdarkness`, the adapter is enabled, and no console error says that the adapter couldn't attach. Use an Actor with the standard WoD health schema and switch Health Estimate's display to its default hover mode. Reload clients after changing modules.
-
-To **roll back**, disable the adapter in Manage Modules, reload clients, then (optionally) stop Foundry and restore/remove only `Z:\Data\modules\stl-wod20-health-estimate`. No Actors, world documents, or Health Estimate configuration are migrated, so uninstalling the companion should restore the original Health Estimate behavior. Keep your normal Foundry world backup discipline nonetheless.
+Disable this module and reload clients to hide its tooltip. To return to v0.1.1, stop Foundry and restore your **backed-up v0.1.1 module folder** or the v0.1.1 ZIP, then re-enable Health Estimate in the world. v0.1.1 requires Health Estimate and does not render on its own. No data migrations occur in either direction; the existing display-mode client setting is retained.
 
 ## Test status
 
-- **Automated/mock tested:** Node unit/integration tests for health damage, wound thresholds, expanded health tracks, output modes, unknown data, skipped alternate splats, hidden/dead flag behavior, idempotent adapter hookup, original colors and fallback handling.
-- **Syntax/package:** module manifest JSON and JavaScript syntax tests; ZIP structure checked at delivery.
-- **Live Foundry v14:** **not run** in the user's Ubuntu world. Nothing has been installed or deployed.
+- **Automated/mock tested:** `node --test tests/*.test.mjs` (Node.js 20+), covering WoD20 injury models, all five modes, visibility, positioning/pan/zoom, mutation-free refreshes, and native Foundry hook wiring.
+- **Package/syntax validated:** manifest dependency/URLs, JS syntax, CSS/file references and ZIP structure.
+- **Live Foundry v14:** **not yet tested** in the user's Ubuntu environment. This package is ready for a live smoke test but has **not been deployed**.
 
-Run tests locally from this directory with `npm test` (Node.js 20+), or `node --test tests/*.test.mjs`. npm does not download any dependencies.
+## Sources
 
-**Sources inspected:**
+- [Foundry v14 `hoverToken` hook](https://foundryvtt.com/api/v14/functions/hookEvents.hoverObject.html)
+- [Foundry v14 canvas coordinate API](https://foundryvtt.com/api/v14/classes/foundry.canvas.Canvas.html#clientCoordinatesFromCanvas)
+- [Foundry v14 `Token.isVisible`](https://foundryvtt.com/api/v14/classes/foundry.canvas.placeables.Token.html)
+- [WoD20 health schema](https://github.com/JohanFalt/Foundry_WoD20/blob/main/module/actor/datamodel/base/actor_health.js)
 
-- [Health Estimate — Foundry package](https://foundryvtt.com/packages/healthEstimate) and [upstream `HealthEstimate.js`](https://github.com/mclemente/healthEstimate/blob/master/src/module/HealthEstimate.js).
-- [WoD20 — Foundry package](https://foundryvtt.com/packages/worldofdarkness) and [WoD20 health data schema](https://github.com/JohanFalt/Foundry_WoD20/blob/main/module/actor/datamodel/base/actor_health.js).
-- [WoD20 wound calculations](https://github.com/JohanFalt/Foundry_WoD20/blob/main/module/actor/data/wod-actor-base.js) and [health-capacity logic](https://github.com/JohanFalt/Foundry_WoD20/blob/main/module/scripts/combat-helpers.js).
-
-The project global architecture/testing/decision references were available; `00-START-HERE.md` and a new numbered Health Estimate module handoff were **not provided** in this conversation.
+`00-START-HERE.md` and a dedicated numbered handoff for this component were not present in the current conversation. See `HANDOFF.md` for module-level continuity.
