@@ -1,5 +1,10 @@
 # Change history — St. Louis WoD20 Health Hover
 
+## v0.2.2 — 2026-10-16
+- Moved the wound-status label above the token.
+- Made the label scale with the token's apparent on-screen size so it grows and shrinks with zoom like the native nameplate.
+- Preserved the plain text-only wound label and wound-level color styling from v0.2.1.
+
 ## v0.2.1 — 2026-10-16
 
 - **Changed:** Hover shows only the native WoD wound level, for example `Wounded`. No bars, type counts, narrative injury text or large black tooltip.

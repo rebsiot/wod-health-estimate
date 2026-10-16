@@ -13,6 +13,7 @@
   box-shadow: none;
   color: #bbbbbb;
   font: 600 12px/1.2 "Signika", sans-serif;
+  transform-origin: center bottom;
   text-align: center;
   text-shadow: -1px -1px 2px #000, 1px 1px 2px #000, 0 0 3px #000;
   overflow-wrap: anywhere;

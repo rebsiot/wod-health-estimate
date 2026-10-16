@@ -13,8 +13,9 @@ export function canShowHealth(token, canvas, user) {
 }
 
 /**
- * Read-only native token-hover status. A small DOM label is placed underneath
- * the existing Foundry token nameplate; it does not change PIXI/token state.
+ * Read-only native token-hover status. A small DOM label is placed above
+ * the token and scales with the token's apparent on-screen size; it does not
+ * change PIXI/token state.
  */
 export class TokenHealthHover {
   constructor({ getCanvas, getGame, document: doc, viewport, requestFrame, cancelFrame }) {
@@ -97,17 +98,18 @@ export class TokenHealthHover {
     const boxWidth = this.node.offsetWidth || 0;
     const boxHeight = this.node.offsetHeight || 16;
     const margin = 8;
-    const nameplateGap = 18; // A second line immediately below the native token name.
     const minX = Math.min(vw / 2, boxWidth / 2 + margin);
     const maxX = Math.max(minX, vw - minX);
-    const left = Math.max(minX, Math.min(maxX, bottomPoint.x));
-    const below = bottomPoint.y + nameplateGap;
-    const above = topPoint.y - boxHeight - 6;
-    const top = below + boxHeight <= vh - margin
-      ? below
-      : above >= margin
-        ? above
-        : Math.max(margin, Math.min(vh - boxHeight - margin, below));
+    const left = Math.max(minX, Math.min(maxX, topPoint.x));
+
+    // Match the nameplate feel: scale the label with the token's on-screen size.
+    const tokenScreenHeight = Math.max(1, Math.abs(bottomPoint.y - topPoint.y));
+    const fontSize = Math.max(12, Math.min(24, Math.round(tokenScreenHeight * 0.18)));
+    this.node.style.fontSize = `${fontSize}px`;
+
+    // Keep the status above the token whenever possible.
+    const preferredTop = topPoint.y - boxHeight - 6;
+    const top = Math.max(margin, Math.min(vh - boxHeight - margin, preferredTop));
 
     this.node.style.left = `${Math.round(left)}px`;
     this.node.style.top = `${Math.round(top)}px`;

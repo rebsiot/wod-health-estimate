@@ -90,7 +90,8 @@ test("hover contains only the localized wound name, never the damage bar", () =>
   assert.equal(h.node.hidden, false);
   assert.equal(h.frameCount, 1);
   assert.equal(h.node.style.left, "520px");
-  assert.equal(h.node.style.top, "598px", "status is beneath existing token nameplate");
+  assert.equal(h.node.style.top, "398px", "status is above the token");
+  assert.equal(h.node.style.fontSize, "24px", "status scales up with the magnified token");
   assert.equal(h.node.style.transform, "translateX(-50%)");
   h.ui.refresh();
   assert.equal(h.node.textContent, "Wounded");
@@ -100,14 +101,15 @@ test("hover contains only the localized wound name, never the damage bar", () =>
   assert.equal(h.frameCount, 0);
 });
 
-test("position follows canvas pan/zoom and moves above token at viewport bottom", () => {
+test("position follows canvas pan/zoom and remains above token while scaling with screen size", () => {
   const h = makeHarness();
   const token = h.makeToken();
   h.ui.hover(token, true);
   h.canvas.clientCoordinatesFromCanvas = p => ({ x: p.x + 5, y: p.y + 5 });
   h.runFrame();
   assert.equal(h.node.style.left, "245px");
-  assert.equal(h.node.style.top, "303px");
+  assert.equal(h.node.style.top, "183px");
+  assert.equal(h.node.style.fontSize, "14px");
   token.bounds = { x: -80, y: 4, width: 100, height: 80 };
   h.runFrame();
   assert.equal(h.node.hidden, true, "hide rather than pinning to viewport edge");
@@ -115,10 +117,12 @@ test("position follows canvas pan/zoom and moves above token at viewport bottom"
   h.runFrame();
   assert.equal(h.node.hidden, false);
   assert.equal(h.node.style.left, "50px", "clamp narrow label within viewport");
-  assert.equal(h.node.style.top, "56px");
+  assert.equal(h.node.style.top, "8px");
+  assert.equal(h.node.style.fontSize, "12px", "small tokens still have a readable minimum size");
   token.bounds = { x: 150, y: 640, width: 90, height: 50 };
   h.runFrame();
-  assert.equal(h.node.style.top, "623px", "avoid overlapping nameplate when little room below");
+  assert.equal(h.node.style.top, "623px", "status stays above the token near the viewport bottom");
+  assert.equal(h.node.style.fontSize, "12px");
   h.ui.hide();
   assert.equal(h.frameCount, 0);
 });
@@ -174,6 +178,7 @@ test("status color follows each WoD wound level, with no filled tooltip style", 
   assert.match(css, /box-shadow:\s*none/);
   assert.match(css, /border:\s*0/);
   assert.match(css, /font:\s*600 12px/);
+  assert.match(css, /transform-origin:\s*center bottom/);
   const h = makeHarness();
   const token = h.makeToken();
   for (let damage = 0; damage <= 7; damage++) {
