@@ -109,3 +109,16 @@ test("sixteen-box hover visual is capped", () => {
   assert.ok(formatWoDHealth(hp, "track").endsWith("…"));
   assert.ok(formatWoDHealth(hp, "bar").endsWith("…"));
 });
+
+
+test("status-only formatter returns wound name without bars or counts", () => {
+  for (let n = 0; n <= 7; n++) {
+    const h = getWoDHealth(actor({ damage: { bashing: n } }));
+    const status = formatWoDHealth(h);
+    assert.equal(status, h.wound.fallback);
+    assert.ok(!status.includes("·"));
+    assert.ok(!status.includes("["));
+  }
+  const h = getWoDHealth(actor({ damage: { bashing: 2 } }));
+  assert.equal(formatWoDHealth(h, "status", k => k === "wod.health.hurt" ? "Battered" : k), "Battered");
+});

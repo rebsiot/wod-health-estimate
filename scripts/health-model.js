@@ -128,10 +128,12 @@ function bar(health, typed = false) {
 }
 
 /** @param {ReturnType<getWoDHealth>} health */
-export function formatWoDHealth(health, mode = "descriptive", localize = x => x) {
+export function formatWoDHealth(health, mode = "status", localize = x => x) {
   if (!health) return "";
   const wound = labelFor(health.wound, localize);
   switch (mode) {
+    case "status":
+      return wound;
     case "abstract":
       return abstractCondition(health);
     case "bar":

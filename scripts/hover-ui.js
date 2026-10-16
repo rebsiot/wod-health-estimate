@@ -2,18 +2,9 @@ import { formatWoDHealth, getWoDHealth } from "./health-model.js";
 
 const ELEMENT_ID = "stl-wod20-health-estimate-hover";
 
-/** Severity cues are presentation only; wound semantics come from WoD20. */
-export function severityFor(health) {
-  if (!health?.totalDamage) return "healthy";
-  if (health.fraction >= 0.75) return "minor";
-  if (health.fraction >= 0.4) return "wounded";
-  return "critical";
-}
-
 export function canShowHealth(token, canvas, user) {
   if (!canvas?.ready || !token?.actor || token.isPreview || token.destroyed) return false;
-  // Foundry v14 Token.isVisible includes hidden tokens and the current
-  // viewer's vision. Do not infer visibility from document data alone.
+  // Let Foundry v14 handle vision and token ownership visibility.
   if (token.isVisible !== true) return false;
   if (token.document?.hidden && !user?.isGM) return false;
   if (canvas.scene?.id && token.document?.parent?.id
@@ -22,9 +13,8 @@ export function canShowHealth(token, canvas, user) {
 }
 
 /**
- * One read-only DOM overlay on the hovered token. Native Foundry v14 APIs:
- * hook hoverToken, Token.bounds, Canvas.clientCoordinatesFromCanvas.
- * No Health Estimate methods, Actor documents, or Token documents are changed.
+ * Read-only native token-hover status. A small DOM label is placed underneath
+ * the existing Foundry token nameplate; it does not change PIXI/token state.
  */
 export class TokenHealthHover {
   constructor({ getCanvas, getGame, document: doc, viewport, requestFrame, cancelFrame }) {
@@ -68,45 +58,60 @@ export class TokenHealthHover {
     if (!canShowHealth(this.token, this.getCanvas(), game?.user)) return this.hide();
     const health = getWoDHealth(this.token.actor);
     if (!health) return this.hide();
-    const mode = game.settings.get("stl-wod20-health-estimate", "displayMode");
     const node = this.ensureNode();
-    node.textContent = formatWoDHealth(health, mode, game.i18n?.localize?.bind(game.i18n));
-    node.dataset.severity = severityFor(health);
+    // Status-only regardless of any persisted v0.2.0 displayMode preference.
+    node.textContent = formatWoDHealth(health, "status", game?.i18n?.localize?.bind(game.i18n));
+    // A fixed set of CSS selectors; never use Actor data as a CSS color value.
+    node.dataset.wound = health.wound.key;
     node.hidden = false;
     this.position();
     if (this.token) this.scheduleFrame();
   }
 
-  /** Canvas units to browser viewport coordinates, following panning and zoom. */
+  /** Follow pan/zoom and token motion using Foundry's canvas-to-client API. */
   position() {
     if (!this.token || !this.node) return;
     const canvas = this.getCanvas();
     if (!canShowHealth(this.token, canvas, this.getGame()?.user)) return this.hide();
     const bounds = this.token.bounds;
     const width = Number(bounds?.width);
+    const height = Number(bounds?.height);
     const x = Number(bounds?.x);
     const y = Number(bounds?.y);
-    if (![width, x, y].every(Number.isFinite)
+    if (![width, height, x, y].every(Number.isFinite)
+      || width <= 0 || height <= 0
       || typeof canvas.clientCoordinatesFromCanvas !== "function") return this.hide();
-    const point = canvas.clientCoordinatesFromCanvas({ x: x + width / 2, y });
-    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) return this.hide();
+
+    const centerX = x + width / 2;
+    const topPoint = canvas.clientCoordinatesFromCanvas({ x: centerX, y });
+    const bottomPoint = canvas.clientCoordinatesFromCanvas({ x: centerX, y: y + height });
+    if (![topPoint?.x, topPoint?.y, bottomPoint?.x, bottomPoint?.y].every(Number.isFinite)) return this.hide();
 
     const { width: vw, height: vh } = this.viewport();
-    if (point.x < 0 || point.x > vw || point.y < 0 || point.y > vh) {
+    // When the token has panned outside the visible viewport, remove its label.
+    if (bottomPoint.x < 0 || bottomPoint.x > vw || bottomPoint.y < 0 || topPoint.y > vh) {
       this.node.hidden = true;
       return;
     }
+
     const boxWidth = this.node.offsetWidth || 0;
-    const boxHeight = this.node.offsetHeight || 0;
+    const boxHeight = this.node.offsetHeight || 16;
     const margin = 8;
+    const nameplateGap = 18; // A second line immediately below the native token name.
     const minX = Math.min(vw / 2, boxWidth / 2 + margin);
     const maxX = Math.max(minX, vw - minX);
-    const left = Math.max(minX, Math.min(maxX, point.x));
-    const above = point.y - boxHeight - 12 >= margin;
-    const top = above ? point.y - 10 : Math.min(point.y + 10, Math.max(0, vh - boxHeight - margin));
+    const left = Math.max(minX, Math.min(maxX, bottomPoint.x));
+    const below = bottomPoint.y + nameplateGap;
+    const above = topPoint.y - boxHeight - 6;
+    const top = below + boxHeight <= vh - margin
+      ? below
+      : above >= margin
+        ? above
+        : Math.max(margin, Math.min(vh - boxHeight - margin, below));
+
     this.node.style.left = `${Math.round(left)}px`;
     this.node.style.top = `${Math.round(top)}px`;
-    this.node.style.transform = above ? "translate(-50%, -100%)" : "translate(-50%, 0)";
+    this.node.style.transform = "translateX(-50%)";
     this.node.hidden = false;
   }
 

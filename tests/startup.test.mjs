@@ -1,10 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-// Simulated Foundry hooks: checks the public API wiring but is not live testing.
+// Simulated Foundry hooks: checks event wiring, not a live Foundry session.
 const once = new Map();
 const events = new Map();
-const settings = new Map();
 const frameCallbacks = new Map();
 let nextId = 0;
 let overlay;
@@ -35,16 +34,14 @@ globalThis.game = {
   system: { id: "worldofdarkness" }, user: { isGM: true },
   modules: new Map(),
   i18n: { localize: k => k },
-  settings: {
-    register: (id, key, config) => settings.set(`${id}:${key}`, config),
-    get: () => "descriptive"
-  }
+  settings: { register() { throw new Error("Display-style control should be gone"); },
+    get() { throw new Error("Legacy display-mode key should not be read"); } }
 };
 globalThis.document = {
   getElementById: () => overlay,
   createElement() {
     return {
-      style: {}, dataset: {}, hidden: false, offsetWidth: 200, offsetHeight: 35,
+      style: {}, dataset: {}, hidden: false, offsetWidth: 84, offsetHeight: 16,
       setAttribute() {}, remove() { overlay = null; }
     };
   },
@@ -57,46 +54,40 @@ globalThis.window = {
 };
 await import("../scripts/main.js");
 
-test("init preserves per-client display mode key and five choices", () => {
-  once.get("init")();
-  const setting = settings.get("stl-wod20-health-estimate:displayMode");
-  assert.equal(setting.scope, "client");
-  assert.equal(setting.default, "descriptive");
-  assert.deepEqual(Object.keys(setting.choices), ["descriptive", "abstract", "bar", "track", "detailed"]);
+test("status-only module does not register unnecessary display controls", () => {
+  assert.equal(once.has("init"), false);
+  assert.equal(typeof once.get("ready"), "function");
 });
 
-test("ready registers native events and renders without Health Estimate installed", () => {
+test("ready registers native hooks and renders without Health Estimate", () => {
   once.get("ready")();
   for (const event of ["hoverToken", "updateActor", "updateToken", "refreshToken", "deleteToken", "canvasTearDown"]) {
     assert.equal(typeof events.get(event), "function", `missing ${event}`);
   }
   events.get("hoverToken")(token, true);
   assert.equal(overlay.textContent, "Uninjured");
+  assert.equal(overlay.dataset.wound, "uninjured");
   actor.system.health.damage.lethal = 1;
   events.get("updateActor")(actor);
-  assert.equal(overlay.textContent, "Bruised · bleeding");
-  settings.get("stl-wod20-health-estimate:displayMode").onChange("detailed");
-  assert.equal(overlay.textContent, "Bruised · bleeding", "current mock setting is still descriptive");
+  assert.equal(overlay.textContent, "Bruised");
+  assert.equal(overlay.dataset.wound, "bruised");
   events.get("canvasTearDown")();
   assert.equal(overlay.hidden, true);
   assert.equal(frameCallbacks.size, 0);
 });
 
-test("updateToken refreshes synthetic actor and deletion dismisses tooltip", () => {
+test("updateToken refreshes unlinked token and deletion dismisses status", () => {
   events.get("hoverToken")(token, true);
   actor.system.health.damage.aggravated = 1;
   events.get("updateToken")(token.document);
-  assert.equal(overlay.textContent, "Hurt · bleeding and grievously hurt");
+  assert.equal(overlay.textContent, "Hurt");
   events.get("deleteToken")(token.document);
   assert.equal(overlay.hidden, true);
 });
 
-test("non-worldofdarkness system leaves hover inactive", () => {
+test("non-WoD20 system leaves the hover module inactive", () => {
   game.system.id = "dnd5e";
   events.clear();
-  settings.clear();
-  once.get("init")();
   once.get("ready")();
   assert.equal(events.size, 0);
-  assert.equal(settings.size, 0);
 });

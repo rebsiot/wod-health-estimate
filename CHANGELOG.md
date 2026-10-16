@@ -1,5 +1,17 @@
 # Change history — St. Louis WoD20 Health Hover
 
+## v0.2.1 — 2026-10-16
+
+- **Changed:** Hover shows only the native WoD wound level, for example `Wounded`. No bars, type counts, narrative injury text or large black tooltip.
+- **Changed:** Position as a small second line underneath the Foundry token nameplate, using similar font scale, without a background, border, or box shadow; flip above the token when space is limited.
+- **Changed:** Text color is keyed to the actual wound level (Uninjured through Incapacitated), not percentage-based broad severity. Eight wound-specific color selectors.
+- **Simplified:** Removed the visible five-choice display-style setting; persisted legacy preferences are ignored, not deleted. Retained historical formatter functions internally for compatibility.
+- **Preserved:** Module ID, GitHub manifest URL, WoD20 health calculations, Foundry visibility protections, token-pan/zoom following, read-only nature, and no Health Estimate dependency.
+- **Upgrade:** Back up the existing module; use the same manifest URL; reload clients to refresh JavaScript/CSS. No world data migration.
+- **Rollback:** Disable or restore your backed-up v0.2.0 module directory/ZIP and reload.
+- **Automated:** 24 Node/mock tests passed; static syntax, manifest and ZIP integrity verified.
+- **Live Foundry:** New v0.2.1 label not yet tested in the user's world. User screenshot confirmed the previous v0.2.0 renderer was visibly running.
+
 ## v0.2.0 — 2026-10-16
 
 - **Changed:** Completely removes the `healthEstimate` required relationship. The only package requirement is the `worldofdarkness` game system; keeps Foundry v14 compatibility.

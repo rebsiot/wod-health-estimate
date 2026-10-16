@@ -1,19 +1,32 @@
 {
   "id": "stl-wod20-health-estimate",
   "title": "St. Louis WoD20 Health Hover",
-  "description": "Standalone WoD20/M20/V20 token-hover injury descriptions and optional abstract, health-bar, damage-track and detailed displays. No Health Estimate dependency.",
-  "version": "0.2.0",
-  "authors": [{ "name": "St. Louis v2 Project" }],
+  "description": "Standalone WoD20/M20/V20 token-hover wound-status label, styled like the token nameplate and colored by wound level. No Health Estimate dependency.",
+  "version": "0.2.1",
+  "authors": [
+    {
+      "name": "St. Louis v2 Project"
+    }
+  ],
   "compatibility": {
     "minimum": "14",
     "verified": "14"
   },
   "relationships": {
-    "requires": [{ "id": "worldofdarkness", "type": "system" }]
+    "requires": [
+      {
+        "id": "worldofdarkness",
+        "type": "system"
+      }
+    ]
   },
-  "esmodules": ["scripts/main.js"],
-  "styles": ["styles/hover.css"],
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/hover.css"
+  ],
   "url": "https://github.com/rebsiot/wod-health-estimate",
   "manifest": "https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/module.json",
-  "download": "https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/dist/stl-wod20-health-estimate-0.2.0.zip"
+  "download": "https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/dist/stl-wod20-health-estimate-0.2.1.zip"
 }

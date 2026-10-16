@@ -1,30 +1,7 @@
 import { TokenHealthHover } from "./hover-ui.js";
 
 const ID = "stl-wod20-health-estimate";
-
-const DISPLAY_CHOICES = {
-  descriptive: "Descriptive: wound level and narrative injuries",
-  abstract: "Abstract: broad condition only",
-  bar: "Health bar: remaining boxes, no damage types",
-  track: "Damage track: Bashing / Lethal / Aggravated symbols",
-  detailed: "Detailed: wound level and exact damage counts"
-};
-
 let hoverUI;
-
-Hooks.once("init", () => {
-  if (game.system?.id !== "worldofdarkness") return;
-  game.settings.register(ID, "displayMode", {
-    name: "WoD20 Injury Hover: Display Style",
-    hint: "Choose what token hovering displays to you. B=Bashing, L=Lethal, A=Aggravated. The damage track uses letters for damaged boxes and dots for empty boxes.",
-    scope: "client",
-    config: true,
-    type: String,
-    choices: DISPLAY_CHOICES,
-    default: "descriptive",
-    onChange: () => hoverUI?.refresh()
-  });
-});
 
 Hooks.once("ready", () => {
   if (game.system?.id !== "worldofdarkness") return;
@@ -58,5 +35,5 @@ Hooks.once("ready", () => {
   if (game.modules.get("healthEstimate")?.active) {
     console.warn(`${ID} | Health Estimate is also active; disable it in Manage Modules if duplicate hover labels appear.`);
   }
-  console.info(`${ID} | Standalone WoD20 health hover ready (no Health Estimate dependency).`);
+  console.info(`${ID} | Compact standalone WoD20 status hover ready (no Health Estimate dependency).`);
 });
