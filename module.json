@@ -2,9 +2,11 @@
   "id": "stl-wod20-health-estimate",
   "title": "St. Louis WoD20 Health Estimate Adapter",
   "description": "WoD20/M20/V20 wound levels and Bashing/Lethal/Aggravated hover descriptions for Health Estimate, with optional abstract and bar displays.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "authors": [
-    { "name": "St. Louis v2 Project" }
+    {
+      "name": "St. Louis v2 Project"
+    }
   ],
   "compatibility": {
     "minimum": "14",
@@ -12,9 +14,20 @@
   },
   "relationships": {
     "requires": [
-      { "id": "healthEstimate", "type": "module" },
-      { "id": "worldofdarkness", "type": "system" }
+      {
+        "id": "healthEstimate",
+        "type": "module"
+      },
+      {
+        "id": "worldofdarkness",
+        "type": "system"
+      }
     ]
   },
-  "esmodules": ["scripts/main.js"]
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "url": "https://github.com/rebsiot/wod-health-estimate",
+  "manifest": "https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/module.json",
+  "download": "https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/dist/stl-wod20-health-estimate-0.1.1.zip"
 }

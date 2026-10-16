@@ -1,6 +1,6 @@
 # St. Louis WoD20 Health Estimate Adapter
 
-**v0.1.0 — 2026-10-16**  
+**v0.1.1 — 2026-10-16**  
 **For:** Foundry VTT v14, World of Darkness 20th Edition (`worldofdarkness`) v7.3.x, and Health Estimate v35.x (the published v14 release series).
 
 This is a **new companion module**, not a modified copy of Health Estimate or WoD20. It translates native WoD20 health boxes into Health Estimate's token-hover label and color fraction. In a Mage or Vampire world, it can show overall condition, descriptive injury clues, a compact health bar, a type-by-type damage track, or counts. It reads Actors; it never updates Actors, Tokens, Scenes, or settings for Health Estimate itself.
@@ -21,11 +21,24 @@ For a character with 2 Bashing, 1 Lethal, 1 Aggravated damage on a 7-box track:
 
 The default narrative text describes plausible visible injuries without revealing exact damage counts; it cannot know the fictional appearance or source of an injury, so treat these as broad visual clues rather than definitive physical details.
 
-## Install or upgrade
+## Install via Foundry Manifest URL (recommended)
+
+1. In the **Foundry Setup** screen, open **Add-on Modules → Install Module**.
+2. Paste the following **Manifest URL** into the field at the bottom and select Install:
+
+   `https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/module.json`
+
+3. If necessary, install **Health Estimate** from Foundry's package browser (World of Darkness 20th system is required for the world).
+4. Launch the desired `worldofdarkness` world and enable **Health Estimate** and **St. Louis WoD20 Health Estimate Adapter** in **Manage Modules**.
+5. In **Configure Settings → Module Settings**, choose **WoD20 Injury Hover: Display Style**. This selection is per client/user.
+
+Foundry fetches a versioned installer ZIP from the manifest's `download` field. The ZIP is stored in this repository at `dist/stl-wod20-health-estimate-0.1.1.zip` and contains **`module.json` at the ZIP root**, as expected for a manifest install. The manifest URL remains stable across subsequent releases; future ZIP names are versioned and must never be overwritten.
+
+## Manual install or upgrade (alternative)
 
 1. Verify Foundry is v14 and the active game system is `worldofdarkness` (v7.3.x expected). Install **Health Estimate** v35.x from Foundry's package browser and enable it in the world.
 2. If replacing an earlier adapter version, back up `Z:\Data\modules\stl-wod20-health-estimate`. Do not overwrite any other module's directory.
-3. Stop Foundry before replacing module files. Extract the folder **`stl-wod20-health-estimate`** from the ZIP into `Z:\Data\modules\` (Ubuntu Foundry user-data directory exposed over Samba).
+3. Stop Foundry before replacing module files. Create `Z:\Data\modules\stl-wod20-health-estimate\` if necessary, and extract the **contents of the ZIP** directly into that folder (Ubuntu Foundry user-data directory exposed over Samba). Do not add a duplicate nested folder.
 4. Check that `Z:\Data\modules\stl-wod20-health-estimate\module.json` exists directly inside the module's folder.
 5. Restart Foundry. In the relevant world, enable **Health Estimate** and **St. Louis WoD20 Health Estimate Adapter** under Manage Modules.
 6. Reload clients. Under **Configure Settings > Module Settings**, select **WoD20 Injury Hover: Display Style**. This is a *per-user* selection, so each GM/player may choose their own level of detail. Health Estimate's existing visibility, display timing, fonts, gradients and position settings still apply.

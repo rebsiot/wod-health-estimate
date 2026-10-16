@@ -2,8 +2,16 @@
 
 **Date:** 2026-10-16  
 **Current module ID:** `stl-wod20-health-estimate`  
-**Current version:** `0.1.0`  
+**Current version:** `0.1.1`  
 **Ownership:** New component. Assign its own numbered conversation/handoff after consulting `00-START-HERE.md`; do not file its code under Player Actions, Paradox, or Dice Improvements.
+
+**GitHub source:** `https://github.com/rebsiot/wod-health-estimate`  
+**Stable manifest:** `https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/module.json`  
+**v0.1.1 download:** `https://raw.githubusercontent.com/rebsiot/wod-health-estimate/main/dist/stl-wod20-health-estimate-0.1.1.zip`
+
+## Distribution note — v0.1.1
+
+Only packaging and manifest metadata changed from v0.1.0. The official install ZIP has `module.json` at archive root for Foundry's installer. Preserve the URL convention in future releases: stable `manifest` on `main`, unique versioned ZIP under `dist/` referenced by that release's `download` field. Never overwrite previously distributed versioned archives. The GitHub repo has no published GitHub Releases yet; download is hosted as a raw repository asset. Initial live Foundry verification remains pending.
 
 ## Decisions
 

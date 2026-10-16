@@ -1,5 +1,15 @@
 # Release history
 
+## v0.1.1 — 2026-10-16
+
+- **Added:** Stable Foundry manifest URL and versioned ZIP download URL on GitHub for installation and update checks.
+- **Changed:** Module publication packaging: downloadable ZIP now has `module.json` at ZIP root, suitable for Foundry's Install Module dialog.
+- **Preserved:** All five display modes, WoD20 health calculations, module ID, Foundry v14 compatibility, native Actor and Token data and existing visibility behavior. No code changes, migrations or world data writes.
+- **Upgrade:** Back up the installed `Data/modules/stl-wod20-health-estimate` directory before updating. Install using the manifest URL or manually replace this adapter folder, then restart Foundry and re-enable as needed.
+- **Rollback:** Disable the adapter, or restore the previous complete module directory; no world data was migrated.
+- **Tests:** Original 16 automated tests rerun plus manifest, archive layout and syntax checks. No live Foundry v14 testing yet.
+- **Known limitations:** Same as v0.1.0; first live installation and hover test remain pending.
+
 ## v0.1.0 — 2026-10-16
 
 - **Added:** WoD20-native damage, wound-level and health-fraction adapter for Health Estimate token hover.
