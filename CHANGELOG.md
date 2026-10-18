@@ -1,4 +1,12 @@
-# Change history — St. Louis WoD20 Health Hover
+# Change history - WoD20 Health Monitor (Health Hover)
+
+## v0.2.3 - 2026-10-18
+- Renamed the module's **Foundry Manage Modules display title** from "St. Louis WoD20 Health Hover" to **"WoD20 Health Monitor (Health Hover)"**.
+- Preserved the module ID `stl-wod20-health-estimate`, standalone WoD20 requirements, wound calculations, colors, above-token placement, zoom scaling, and read-only behavior. No world data migration.
+- Refreshed installation instructions so the new display title and per-world enabled checkbox are easy to find.
+- **Upgrade:** Back up the existing module folder, update through the unchanged manifest, and refresh your clients. **Rollback:** Restore v0.2.2 and refresh.
+- **Automated/mock tests:** Same code and tests as v0.2.2, re-run for v0.2.3. **Live:** v0.2.2 hover/scaling was user-confirmed; v0.2.3 name visibility in Foundry awaits a live check.
+- **Known limitation:** No tagged GitHub Releases entry as part of this repository publication. The `dist/` ZIP and stable manifest provide update/install paths. No published redistribution license has been supplied.
 
 ## v0.2.2 — 2026-10-16
 - Moved the wound-status label above the token.
